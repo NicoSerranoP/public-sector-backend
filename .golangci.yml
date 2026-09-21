@@ -1,0 +1,62 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    # Correctness
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    # Bugs / robustness
+    - bodyclose
+    - errorlint
+    - nilerr
+    - nilnil
+    - forcetypeassert
+    # Maintainability
+    - cyclop
+    - funlen
+    - gocritic
+    - revive
+    # Hygiene
+    - misspell
+    - whitespace
+    - usestdlibvars
+
+  settings:
+    cyclop:
+      max-complexity: 10
+
+    funlen:
+      lines: 50
+      statements: 30
+
+    revive:
+      rules:
+        - name: exported
+        - name: var-naming
+        - name: indent-error-flow
+        - name: error-strings
+        - name: error-naming
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+  settings:
+    gofmt:
+      simplify: true
