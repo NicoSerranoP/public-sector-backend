@@ -17,7 +17,12 @@
    golangci-lint run
    ```
 
-3. Run the application
+3. Build temporarily and run the application
    ```sh
-   go run ./cmd/api/main.go
+   go run ./cmd/api
+   ```
+
+4. Build the application binary
+   ```sh
+   go build -o bin/api ./cmd/api
    ```

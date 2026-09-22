@@ -2,21 +2,22 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"public-sector-backend/internal/config"
 )
 
 func main() {
-	r := gin.Default()
+	r := NewRouter()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	var address string
 
-	if err := r.Run(); err != nil {
+	if config.IS_IN_PRODUCTION {
+		address = "0.0.0.0:8080"
+	} else {
+		address = "127.0.0.1:8080"
+	}
+
+	if err := r.Run(address); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}
 }
