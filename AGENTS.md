@@ -61,5 +61,8 @@ For multi-step tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
+## 5. Clean Code
+
+Only when a task involves writing or editing code, load the `clean-code-review` skill once, before writing, and follow its heuristics while writing. Do not load it for questions, explanations, or other tasks with no code changes. Do not run a review-and-rewrite pass afterwards, and do not rewrite existing code to satisfy it (see section 3).
 
 If you need information about the project, read the documentation in [docs](docs).
