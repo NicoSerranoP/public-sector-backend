@@ -12,9 +12,9 @@ func HealthHandler(c *gin.Context) {
 	healthy := true
 	message := "healthy"
 
-	successfulQuery := database.Get().Ping(c.Request.Context())
+	err := database.Get().Ping(c.Request.Context())
 
-	if successfulQuery != nil {
+	if err != nil {
 		healthy = false
 		message = "could not ping the database"
 	}
