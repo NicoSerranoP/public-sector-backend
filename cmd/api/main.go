@@ -1,12 +1,20 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"public-sector-backend/internal/config"
+	"public-sector-backend/internal/database"
 )
 
 func main() {
+	if err := database.Initialize(context.Background()); err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	defer database.Get().Close()
+
 	r := NewRouter()
 
 	var address string

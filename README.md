@@ -4,6 +4,7 @@
 
 1. Go 1.27 or higher
 2. [GolangCI-Lint](https://golangci-lint.run/docs/welcome/install/local/). In Windows use Chocolatey.
+3. [Postgres 18](https://www.postgresql.org/download/windows/)
 
 ## Development
 
