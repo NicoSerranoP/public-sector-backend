@@ -11,5 +11,7 @@ func NewRouter() *gin.Engine {
 
 	r.GET("/health", handlers.HealthHandler)
 
+	r.POST("/voter", handlers.RegisterVoterHandler)
+
 	return r
 }
