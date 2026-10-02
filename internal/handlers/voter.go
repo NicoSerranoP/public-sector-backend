@@ -58,13 +58,10 @@ func GetVoterHandler(c *gin.Context) {
 
 	if err := row.Scan(&voter.Id, &voter.Address, &voter.CreatedAt); err != nil {
 		log.Println("failed to get voter:", err)
+
 		c.JSON(http.StatusNotFound, gin.H{"error": "voter not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, voter)
-}
-
-func GetBlacklistedVotersHandler(c *gin.Context) {
-	// TODO: implement this
 }

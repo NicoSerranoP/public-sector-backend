@@ -12,7 +12,7 @@ import (
 var database *pgxpool.Pool
 
 func createTables(ctx context.Context, pool *pgxpool.Pool) error {
-	_, err := pool.Exec(ctx, `
+	_, errCreateVoters := pool.Exec(ctx, `
 		CREATE TABLE IF NOT EXISTS voters (
 			id CHAR(10) PRIMARY KEY,
 			address CHAR(42) NOT NULL UNIQUE,
@@ -20,7 +20,24 @@ func createTables(ctx context.Context, pool *pgxpool.Pool) error {
 		)
 	`)
 
-	return err
+	if errCreateVoters != nil {
+		return errCreateVoters
+	}
+
+	_, errBlacklist := pool.Exec(ctx, `
+		CREATE TABLE IF NOT EXISTS blacklist (
+			address CHAR(42) NOT NULL,
+			duration INTERVAL NOT NULL,
+			is_active BOOLEAN NOT NULL DEFAULT TRUE,
+			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+		)
+	`)
+
+	if errBlacklist != nil {
+		return errBlacklist
+	}
+
+	return nil
 }
 
 func Initialize(ctx context.Context) error {

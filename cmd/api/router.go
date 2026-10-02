@@ -23,5 +23,13 @@ func NewRouter() *gin.Engine {
 
 	r.GET("/voter/:id", handlers.GetVoterHandler)
 
+	r.POST("/blacklist", handlers.RegisterBlacklistVoterHandler)
+
+	r.GET("/blacklist", handlers.GetBlacklistedVotersHandler)
+
+	r.GET("/blacklist/:address", handlers.GetIsVoterBlacklistedHandler)
+
+	r.DELETE("/blacklist/:address", handlers.RemoveVoterFromBlacklistHandler)
+
 	return r
 }
