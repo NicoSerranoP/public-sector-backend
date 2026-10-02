@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"public-sector-backend/internal/database"
 
@@ -40,12 +41,33 @@ func RegisterVoterHandler(c *gin.Context) {
 }
 
 func GetVoterHandler(c *gin.Context) {
-	// TODO: implement this
-	/*
-		row := database.Get().QueryRow(c.Request.Context(), "SELECT * FROM voters WHERE id=$1", c.Param("id"))
+	id := c.Param("id")
+	idType := c.DefaultQuery("type", "id")
 
-		return row
-	*/
+	if idType != "id" && idType != "address" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "wrong type of id"})
+		return
+	}
+
+	row := database.Get().QueryRow(
+		c.Request.Context(),
+		"SELECT * FROM voters WHERE "+idType+"=$1",
+		id,
+	)
+
+	var voter struct {
+		Id        string    `json:"id"`
+		Address   string    `json:"address"`
+		CreatedAt time.Time `json:"created_at"`
+	}
+
+	if err := row.Scan(&voter.Id, &voter.Address, &voter.CreatedAt); err != nil {
+		log.Println("failed to get voter:", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "voter not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, voter)
 }
 
 func GetBlacklistedVotersHandler(c *gin.Context) {

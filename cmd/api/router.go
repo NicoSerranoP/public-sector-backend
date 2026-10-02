@@ -13,5 +13,7 @@ func NewRouter() *gin.Engine {
 
 	r.POST("/voter", handlers.RegisterVoterHandler)
 
+	r.GET("/voter/:id", handlers.GetVoterHandler)
+
 	return r
 }
