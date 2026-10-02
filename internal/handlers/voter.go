@@ -3,7 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"time"
 
 	"public-sector-backend/internal/database"
 
@@ -13,7 +12,7 @@ import (
 func RegisterVoterHandler(c *gin.Context) {
 	var body RegisterVoterDTO
 
-	if err := c.BindJSON(&body); err != nil {
+	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -28,7 +27,7 @@ func RegisterVoterHandler(c *gin.Context) {
 
 	if err != nil {
 		message := "failed to register voter"
-		log.Println(message+":", err)
+		log.Println(err)
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": message})
 		return
@@ -55,11 +54,7 @@ func GetVoterHandler(c *gin.Context) {
 		id,
 	)
 
-	var voter struct {
-		Id        string    `json:"id"`
-		Address   string    `json:"address"`
-		CreatedAt time.Time `json:"created_at"`
-	}
+	var voter database.VoterType
 
 	if err := row.Scan(&voter.Id, &voter.Address, &voter.CreatedAt); err != nil {
 		log.Println("failed to get voter:", err)
