@@ -26,10 +26,9 @@ func RegisterVoterHandler(c *gin.Context) {
 	)
 
 	if err != nil {
-		message := "failed to register voter"
 		log.Println(err)
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": message})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to register voter"})
 		return
 	}
 

@@ -24,10 +24,9 @@ func RegisterBlacklistVoterHandler(c *gin.Context) {
 	)
 
 	if err != nil {
-		message := "failed to blacklist voter"
 		log.Println(err)
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": message})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to blacklist voter"})
 		return
 	}
 
@@ -40,14 +39,14 @@ func RegisterBlacklistVoterHandler(c *gin.Context) {
 func GetBlacklistedVotersHandler(c *gin.Context) {
 	rows, err := database.Get().Query(
 		c.Request.Context(),
-		"SELECT address, (EXTRACT(EPOCH FROM duration) / 60)::int, is_active, created_at FROM blacklist WHERE is_active = TRUE",
+		`SELECT address, (EXTRACT(EPOCH FROM duration) / 60)::int, is_active, created_at
+		FROM blacklist WHERE is_active = TRUE`,
 	)
 
 	if err != nil {
-		message := "failed to get blacklisted voters"
 		log.Println(err)
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": message})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get blacklisted voters"})
 		return
 	}
 
@@ -58,22 +57,55 @@ func GetBlacklistedVotersHandler(c *gin.Context) {
 	for rows.Next() {
 		var voter database.BlacklistType
 
-		if err := rows.Scan(&voter.Address, &voter.Duration, &voter.IsActive, &voter.CreatedAt); err != nil {
-			message := "failed to scan blacklisted voter"
+		err := rows.Scan(&voter.Address, &voter.Duration, &voter.IsActive, &voter.CreatedAt)
+
+		if err != nil {
 			log.Println(err)
 
-			c.JSON(http.StatusInternalServerError, gin.H{"error": message})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan blacklisted voter"})
 			return
 		}
 
 		blacklistedVoters = append(blacklistedVoters, voter)
 	}
 
-	c.JSON(http.StatusOK, blacklistedVoters)
+	c.JSON(http.StatusOK, gin.H{"blacklist": blacklistedVoters})
 }
 
 func GetIsVoterBlacklistedHandler(c *gin.Context) {
-	// TODO: implement this
+	address := c.Param("address")
+
+	rows, err := database.Get().Query(
+		c.Request.Context(),
+		`SELECT address, (EXTRACT(EPOCH FROM duration) / 60)::int, is_active, created_at
+		FROM blacklist WHERE address = $1 AND is_active = TRUE`,
+		address,
+	)
+
+	if err != nil {
+		log.Println(err)
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get blacklisted voter"})
+		return
+	}
+
+	var blacklist []database.BlacklistType
+
+	for rows.Next() {
+		var voter database.BlacklistType
+		err := rows.Scan(&voter.Address, &voter.Duration, &voter.IsActive, &voter.CreatedAt)
+
+		if err != nil {
+			log.Println(err)
+
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to scan blacklisted voter"})
+			return
+		}
+
+		blacklist = append(blacklist, voter)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"blacklist": blacklist})
 }
 
 func RemoveVoterFromBlacklistHandler(c *gin.Context) {
