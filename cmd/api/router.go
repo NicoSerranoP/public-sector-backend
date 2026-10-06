@@ -21,16 +21,15 @@ func NewRouter() *gin.Engine {
 	router.GET("/health", handlers.HealthHandler)
 
 	router.POST("/voter", handlers.RegisterVoterHandler)
-
 	router.GET("/voter/:id", handlers.GetVoterHandler)
 
 	router.POST("/blacklist", handlers.RegisterBlacklistVoterHandler)
-
 	router.GET("/blacklist", handlers.GetBlacklistedVotersHandler)
-
 	router.GET("/blacklist/:address", handlers.GetIsVoterBlacklistedHandler)
-
 	router.DELETE("/blacklist/:address", handlers.RemoveVoterFromBlacklistHandler)
+
+	router.POST("/relay/vote", handlers.RelayCastVoteHandler)
+	router.POST("/relay/proposal", handlers.RelayCreateProposalHandler)
 
 	return router
 }
