@@ -13,23 +13,24 @@ func limitBodySize(c *gin.Context) {
 }
 
 func NewRouter() *gin.Engine {
-	r := gin.Default()
+	router := gin.Default()
+	router.SetTrustedProxies(nil) // set nginx proxy IP if using reverse proxy
 
-	r.Use(limitBodySize)
+	router.Use(limitBodySize)
 
-	r.GET("/health", handlers.HealthHandler)
+	router.GET("/health", handlers.HealthHandler)
 
-	r.POST("/voter", handlers.RegisterVoterHandler)
+	router.POST("/voter", handlers.RegisterVoterHandler)
 
-	r.GET("/voter/:id", handlers.GetVoterHandler)
+	router.GET("/voter/:id", handlers.GetVoterHandler)
 
-	r.POST("/blacklist", handlers.RegisterBlacklistVoterHandler)
+	router.POST("/blacklist", handlers.RegisterBlacklistVoterHandler)
 
-	r.GET("/blacklist", handlers.GetBlacklistedVotersHandler)
+	router.GET("/blacklist", handlers.GetBlacklistedVotersHandler)
 
-	r.GET("/blacklist/:address", handlers.GetIsVoterBlacklistedHandler)
+	router.GET("/blacklist/:address", handlers.GetIsVoterBlacklistedHandler)
 
-	r.DELETE("/blacklist/:address", handlers.RemoveVoterFromBlacklistHandler)
+	router.DELETE("/blacklist/:address", handlers.RemoveVoterFromBlacklistHandler)
 
-	return r
+	return router
 }
