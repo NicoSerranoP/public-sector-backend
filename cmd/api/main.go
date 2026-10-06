@@ -26,6 +26,7 @@ func main() {
 	}
 
 	if err := r.Run(address); err != nil {
-		log.Fatalf("failed to run server: %v", err)
+		log.Printf("failed to run server: %v", err)
+		return
 	}
 }

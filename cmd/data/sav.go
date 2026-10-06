@@ -245,6 +245,7 @@ type slotReader struct {
 	finished bool
 }
 
+//nolint:cyclop
 func (s *slotReader) next() (uint64, bool) {
 	for !s.finished {
 		if s.cursor >= slotSize {
@@ -282,7 +283,7 @@ func (s *slotReader) next() (uint64, bool) {
 }
 
 func (p *savParser) fail(err error) {
-	if p.err == nil && err != io.EOF {
+	if p.err == nil && !errors.Is(err, io.EOF) {
 		p.err = err
 	}
 }
