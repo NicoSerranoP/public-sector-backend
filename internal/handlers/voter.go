@@ -22,7 +22,7 @@ func RegisterVoterHandler(c *gin.Context) {
 	_, err := database.Get().Exec(
 		c.Request.Context(),
 		"INSERT INTO voters (id, address) VALUES ($1, $2)",
-		body.Id, body.Address,
+		body.ID, body.Address,
 	)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func RegisterVoterHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"id":      body.Id,
+		"id":      body.ID,
 		"address": body.Address,
 	})
 }
@@ -55,7 +55,7 @@ func GetVoterHandler(c *gin.Context) {
 
 	var voter database.VoterType
 
-	if err := row.Scan(&voter.Id, &voter.Address, &voter.CreatedAt); err != nil {
+	if err := row.Scan(&voter.ID, &voter.Address, &voter.CreatedAt); err != nil {
 		log.Println("failed to get voter:", err)
 
 		c.JSON(http.StatusNotFound, gin.H{"error": "voter not found"})

@@ -7,9 +7,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+//revive:disable:var-naming
 var APP_ENV string
 var DATABASE_URL string
 var IS_IN_PRODUCTION bool
+
+//revive:enable:var-naming
 
 func init() {
 	if err := godotenv.Load(); err != nil {
