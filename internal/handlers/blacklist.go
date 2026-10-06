@@ -109,5 +109,20 @@ func GetIsVoterBlacklistedHandler(c *gin.Context) {
 }
 
 func RemoveVoterFromBlacklistHandler(c *gin.Context) {
-	// TODO: implement this
+	address := c.Param("address")
+
+	_, err := database.Get().Exec(
+		c.Request.Context(),
+		"UPDATE blacklist SET is_active = FALSE WHERE address = $1 AND is_active = TRUE",
+		address,
+	)
+
+	if err != nil {
+		log.Println(err)
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to remove voter from blacklist"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "voter removed from blacklist"})
 }
